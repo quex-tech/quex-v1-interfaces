@@ -39,9 +39,9 @@ contract C {
         qreader = IV1QuexLogReader(QUEX_LOG_ADDRESS);
     }
 
-    function getLastBTCPrice() public view returns (int256) {
+    function getLastBTCPriceInCents() public view returns (int256) {
         (uint256 id, int256 value, uint256 timestamp) = qreader.getLastData(BTC_FEED_ID);
-        return value;
+        return (value / 10000) + (value % 10000 >= 5000 ? 1 : 0);
     }
 }
 ```
