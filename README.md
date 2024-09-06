@@ -23,7 +23,7 @@ testnet), and call the needed `view` method (see info on `feedID` and contract a
 
 For example, in [Remix IDE](https://remix.ethereum.org/)
 
-```
+```solidity
 import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol"
 
 // SPDX-License-Identifier: MIT
