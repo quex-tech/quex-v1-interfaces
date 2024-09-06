@@ -19,11 +19,31 @@ particular `V1QuexLog` contract.
 
 In order to use Quex datafeeds, one needs to import `interfaces/IV1QuexLogReader.sol` interface to the Solidity project,
 supply the interface with the address of `V1QuexLog` contract (`0x3959148FF37f2d5c5F7a4A9c2E12dA4057B9C38A` in Redbelly
-testnet), and call the needed `view` method (see [Current Datafeeds](#cd-anchor)).
+testnet), and call the needed `view` method (see info on `feedID` and contract address in [Current Datafeeds](#cd-anchor)).
 
 For example, in [Remix IDE](https://remix.ethereum.org/)
 
 ```
+import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol"
+
+// SPDX-License-Identifier: MIT
+pragma solidity 0.8.22;
+
+const bytes32 BTC_FEED_ID = 0x4254430000000000000000000000000000000000000000000000000000000000;
+const address QUEX_LOG_ADDRESS = 0x3959148FF37f2d5c5F7a4A9c2E12dA4057B9C38A;
+
+contract C {
+    IV1QuexLogReader qreader;
+    
+    constructor () {
+        qreader = IV1QuexLogReader(QUEX_LOG_ADDRESS);
+    }
+
+    function getLastBTCPrice() public view returns (int256) {
+        (uint256 id, int256 value, uint256 timestamp) = qreader.getLastData(BTC_FEED_ID);
+        return value;
+    }
+}
 ```
 
 ## Deployed Contracts
