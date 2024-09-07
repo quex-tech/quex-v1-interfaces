@@ -27,21 +27,21 @@ For example, in [Remix IDE](https://remix.ethereum.org/)
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.22;
 
-import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol"
+import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol";
 
-const bytes32 BTC_FEED_ID = 0x4254430000000000000000000000000000000000000000000000000000000000;
-const address QUEX_LOG_ADDRESS = 0x3959148FF37f2d5c5F7a4A9c2E12dA4057B9C38A;
+bytes32 constant BTC_FEED_ID = 0x4254430000000000000000000000000000000000000000000000000000000000;
+address constant QUEX_LOG_ADDRESS = 0x3959148FF37f2d5c5F7a4A9c2E12dA4057B9C38A;
 
 contract C {
     IV1QuexLogReader qreader;
-    
+
     constructor () {
         qreader = IV1QuexLogReader(QUEX_LOG_ADDRESS);
     }
 
     function getLastBTCPriceInCents() public view returns (int256) {
         (uint256 id, int256 value, uint256 timestamp) = qreader.getLastData(BTC_FEED_ID);
-        return (value / 10000) + (value % 10000 >= 5000 ? 1 : 0);
+        return (value / 10000) + (value % 10000 >= 5000 ? int256(1) : int256(0));
     }
 }
 ```
