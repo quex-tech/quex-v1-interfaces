@@ -12,7 +12,7 @@ quotes together with the verification of the certificate chain up to the Intel S
 issues the attestation quote containing the public key (more precisely, ETH address) generated inside the domain.
 
 This quote is signed by standard Intel DCAP enclave and registered on-chain together with all the necessary
-certificates. From that point, the data signed with the corresponding private key can be set to be trusted for the
+certificates. From that point, the data signed with the corresponding private key can be set as trusted for the
 particular `V1QuexLog` contract.
 
 ## Example Usage
