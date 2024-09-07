@@ -24,10 +24,10 @@ testnet), and call the needed `view` method (see info on `feedID` and contract a
 For example, in [Remix IDE](https://remix.ethereum.org/)
 
 ```solidity
-import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol"
-
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.22;
+
+import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol"
 
 const bytes32 BTC_FEED_ID = 0x4254430000000000000000000000000000000000000000000000000000000000;
 const address QUEX_LOG_ADDRESS = 0x3959148FF37f2d5c5F7a4A9c2E12dA4057B9C38A;
