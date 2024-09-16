@@ -29,7 +29,7 @@ pragma solidity 0.8.22;
 
 import "https://github.com/quex-tech/quex-v1-interfaces/blob/master/interfaces/IV1QuexLogReader.sol";
 
-bytes32 constant BTC_FEED_ID = 0x4254430000000000000000000000000000000000000000000000000000000000;
+bytes32 constant BTC_FEED_ID = "BTC";
 address constant QUEX_LOG_ADDRESS = 0x3959148FF37f2d5c5F7a4A9c2E12dA4057B9C38A;
 
 contract C {
