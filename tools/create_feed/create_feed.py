@@ -32,7 +32,7 @@ def create_request(w3, contract, request) -> bytes:
 def create_patch(w3, contract, patch) -> bytes:
     if patch is None:
         return bytes.fromhex("0000000000000000000000000000000000000000000000000000000000000000")
-    tx_hash = contract.functions.addPrivatePatch(patch).transact()
+    tx_hash = contract.functions.addPrivatePatch(patch["td_id"], patch).transact()
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     return tx_receipt["logs"][0]["data"]
 

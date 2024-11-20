@@ -15,16 +15,42 @@ This quote is signed by standard Intel DCAP enclave and registered on-chain toge
 certificates. From that point, the data signed with the corresponding private key can be set as trusted for the
 particular `V1RequestRegistry` contract.
 
+## Overview
+
+### Feeds
+Quex enables smart contracts to fetch off-chain data by using a mechanism called a feed. 
+A feed is a predefined configuration that specifies how data is fetched, processed, and 
+delivered to your smart contract. It serves as a bridge between external data sources (like APIs) 
+and the on-chain environment.
+
+A feed consists of the following components:
++ Request configuration: Defines the data source, including the URL, HTTP method, headers, parameters, and body
+required to retrieve the data.
++ Private configuration patch: A secure, encrypted section of the feed that contains sensitive parts of the request
+configuration, such as the path suffix, headers, parameters, and body. Only a specified trust domain has the authority
+to decrypt and access these parts. This ensures that sensitive information like authentication tokens or API keys is
+kept secure while still allowing the smart contract to make requests based on the feed.  
++ jq filter: Specifies how to extract and transform relevant data from the raw JSON response.
++ Output ABI: Describes the format of the data delivered to the smart contract, ensuring compatibility with EVM-based applications.
+
+### Requests
+Once a feed is created, it acts as a reusable template for making data requests. Here’s how the process works:
+1. Initiating the Request: The smart contract calls `IV1RequestRegistry.sendRequest` with , specifying the feed ID,
+callback address and method and gas limit for callback function. This request should be paid to cover the callback 
+processing logic (which is out of Quex control) for the network fee by relayer to be reimbursed.
+2. Fetching and Processing the Data: Quex performs the HTTP request to the specified data source using the provided feed in TDX, sign result with TDX's private key
+3. Returning the Data: The processed data and TDX's signature is returned on-chain where signature checked.
+4. Smart Contract Callback: Once the data is retrieved and checked, Quex returns the result to the smart contract by invoking provided callback function.
+
 ## Example Usage
 
 ### Create Feed
 
-Before using Quex, you need to set up a feed. This involves defining how data is fetched and processed:
-- Define [request](interfaces/IV1FeedRegistry.sol#L58)
-- Define [private patch](interfaces/IV1FeedRegistry.sol#L60) if needed
-- Define [jq filter](interfaces/IV1FeedRegistry.sol#L62) to transform API response
-- Define [response schema](interfaces/IV1FeedRegistry.sol#L64)
-- Combine all parts together as a [feed](interfaces/IV1FeedRegistry.sol#L66)
+Before using Quex, you need to set up a feed. This involves calling `IV1FeedRegistry` interface's functions to configure
+request specification and postprocessing: create [request](interfaces/IV1FeedRegistry.sol#L58), 
+add [private patch](interfaces/IV1FeedRegistry.sol#L60) if needed, provide [jq filter](interfaces/IV1FeedRegistry.sol#L62)
+to transform API response and specify [response schema](interfaces/IV1FeedRegistry.sol#L64).
+When all parts are created, create a feed by calling [addFeed function](interfaces/IV1FeedRegistry.sol#L66).
 
 To simplify your start with Quex, you can use [a Python script](tools/create_feed) designed to streamline the feed creation process.
 
@@ -57,7 +83,7 @@ contract C is IV1QuexResponseProcessor {
   function request(
     bytes32 feedId,
     uint32 callbackGasLimit) public {
-    (bytes32 requestId, ) = quexRequests.sendRequest(feedId, address(this), this.processResponse.selector, callbackGasLimit);
+    (bytes32 requestId, ) = quexRequests.sendRequest{value: <value>}(feedId, address(this), this.processResponse.selector, callbackGasLimit);
     // you can store some context related to requestId here
   }
 
