@@ -19,7 +19,7 @@ source ./venv/bin/activate
 pip install -r requirements.txt
 ```
 4. Set up how the script will access the private key [here](create_feed.py#L62)
-5. Configure your feed in `quex_feed.json`. Full set of options to describe your feed you can see in [IV1RequestRegistry models](../../interfaces/IV1RequestRegistry.sol)
+5. Configure your feed in `quex_feed.json`. Full set of options to describe your feed you can see in [IV1FeedRegistry models](../../interfaces/IV1FeedRegistry.sol)
 6. Run script
 ```bash
 python create_feed.py
@@ -36,7 +36,7 @@ Below are the detailed models of each feed part:
 + `filter` (string): Specifies how to extract and transform relevant data from the raw JSON response.
 
 ### HTTPRequest
-+ `method` (number): HTTP method to use (0 - GET, 1 - POST, 2 - PUT, 3 - PATCH, 4 - DELETE, 5 - OPTIONS, 6 - TRACE).
++ `method` (enum): HTTP method to use (0 - GET, 1 - POST, 2 - PUT, 3 - PATCH, 4 - DELETE, 5 - OPTIONS, 6 - TRACE).
 + `url` (string): The base URL of the data source.
 + `path` (string): URL path of data source.
 + `headers` (list\[RequestHeader\]): Key-value pairs for HTTP headers.
@@ -60,9 +60,9 @@ Below are the detailed models of each feed part:
 
 ### RequestHeaderPatch
 + `key` (string): Key of the header.
-+ `value` (string): Encrypted value of the header.
-+ 
++ `value` (bytes): Encrypted value of the header.
+ 
 ### QueryParameterPatch
 + `key` (string): Key of the parameter.
-+ `value` (string): Encrypted value of the parameter.
++ `value` (bytes): Encrypted value of the parameter.
 

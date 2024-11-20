@@ -35,11 +35,11 @@ kept secure while still allowing the smart contract to make requests based on th
 
 ### Requests
 Once a feed is created, it acts as a reusable template for making data requests. Here’s how the process works:
-1. Initiating the Request: The smart contract calls `IV1RequestRegistry.sendRequest` with , specifying the feed ID,
+1. Initiating the Request: The smart contract calls `IV1RequestRegistry.sendRequest` specifying the feed ID,
 callback address and method and gas limit for callback function. This request should be paid to cover the callback 
 processing logic (which is out of Quex control) for the network fee by relayer to be reimbursed.
-2. Fetching and Processing the Data: Quex performs the HTTP request to the specified data source using the provided feed in TDX, sign result with TDX's private key
-3. Returning the Data: The processed data and TDX's signature is returned on-chain where signature checked.
+2. Fetching and Processing the Data: Quex TD performs the HTTPS request to the specified data source using the provided feed with certificte verification and response validation performed inside TD, signs the result with the private key exclusively owned by TD
+3. Returning the Data: The processed data and TD's signature is returned on-chain where signature checked.
 4. Smart Contract Callback: Once the data is retrieved and checked, Quex returns the result to the smart contract by invoking provided callback function.
 
 ## Example Usage
