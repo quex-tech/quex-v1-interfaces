@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": 0,
+    "host": "www.binance.com",
+    "path": "/api/v3/ticker/price",
+    "headers": [],
+    "parameters": [{"key": "symbol", "value": "ETHBTC"}],
+    "body": null
+  },
+  "patch": null,
+  "schema": "uint256",
+  "filter": ".price | tonumber * 100000000 | floor"
+}
