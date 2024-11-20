@@ -26,11 +26,13 @@ Before using Quex, you need to set up a feed. This involves defining how data is
 - Define [response schema](interfaces/IV1FeedRegistry.sol#L64)
 - Combine all parts together as a [feed](interfaces/IV1FeedRegistry.sol#L66)
 
+To simplify your start with Quex, you can use [a Python script](tools/create_feed) designed to streamline the feed creation process.
+
 ### Perform Request
 
 Once the feed is created, you can make requests to fetch data and process the response in your smart contract.
 
-In order to process response your contract should implement `interfaces/IV1QuexResponseProcessor.sol` interface 
+In order to process response your contract should implement [IV1QuexResponseProcessor](interfaces/IV1QuexResponseProcessor.sol) interface 
 to the Solidity project, provide your contract address and `processResponse` function's signature while
 creating request through `IV1RequestRegistry.sendRequest`.
 
