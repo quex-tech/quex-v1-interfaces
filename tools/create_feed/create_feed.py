@@ -6,6 +6,15 @@ from eth_account.signers.local import LocalAccount
 from web3 import Web3
 from web3.middleware import ExtraDataToPOAMiddleware, SignAndSendRawMiddlewareBuilder
 
+http_methods = {
+   "GET"    : 0,
+   "POST"   : 1,
+   "PUT"    : 2,
+   "PATCH"  : 3,
+   "DELETE" : 4,
+   "OPTIONS": 5,
+   "TRACE"  : 6
+}
 
 def init_web3(config):
     w3 = Web3(Web3.HTTPProvider(config["rpc_url"]))
@@ -56,21 +65,20 @@ def create_feed(w3, contract, request_id, patch_id, schema_id, filter_id):
 
 
 if __name__ == "__main__":
-    config = {
-        "rpc_url": "https://governors.testnet.redbelly.network",
-        "contract_address": "0xE35fBA13d96a9A26166cbD2aC8Df12CD842e1408",
-        "secret_key": os.environ.get("SECRET_KEY"),
-        "feed_file_name": "quex_feed.json"
-    }
+    with open("config.json", "r") as f:
+        config = json.loads(f.read())
+    config["secret_key"] = os.environ.get("SECRET_KEY")
 
     w3 = init_web3(config)
 
     with open("FeedRegistry.json", 'r') as f:
         abi = json.load(f)
-        contract = init_contract(config["contract_address"], abi, w3)
+        contract = init_contract(config["feed_registry"], abi, w3)
 
-    with open(config["feed_file_name"], "r") as f:
+    with open(config["feed_file"], "r") as f:
         feed = json.load(f)
+
+    feed["request"]["method"] = http_methods[feed["request"]["method"].upper()]
 
     request_id = create_request(w3, contract, feed["request"])
     print("request_id:    0x" + request_id.hex())

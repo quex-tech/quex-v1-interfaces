@@ -1,0 +1,5 @@
+{
+    "rpc_url": "https://governors.testnet.redbelly.network",
+    "feed_registry": "0xE35fBA13d96a9A26166cbD2aC8Df12CD842e1408",
+    "feed_file": "quex_feed.json"
+}
