@@ -1,6 +1,6 @@
 {
   "request": {
-    "method": 0,
+    "method": "GET",
     "host": "www.binance.com",
     "path": "/api/v3/ticker/price",
     "headers": [],
