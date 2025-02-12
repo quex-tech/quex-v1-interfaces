@@ -4,8 +4,8 @@ pragma solidity 0.8.22;
 struct Flow {
     uint256 gasLimit;
     uint256 actionId;
-    address consumer;
     address pool;
+    address consumer;
     bytes4 callback;
 }
 

@@ -37,6 +37,5 @@ interface IQuexActionRegistry {
     function pushData(OracleMessage memory message, ETHSignature memory signature, uint256 flowId, address tdAddress) external payable;
     function createRequest(uint256 flowId) external payable returns (uint256 requestId);
     function fulfillRequest(OracleMessage memory message, ETHSignature memory signature, uint256 requestId, address tdAddress) external;
-
-    function getQuexGas() external view returns (uint256);
+    function getRequestFee(uint256 flowId) external view returns (uint256 nativeFee, uint256 gasFee);
 }

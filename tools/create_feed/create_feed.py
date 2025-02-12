@@ -1,10 +1,19 @@
 import json
 import os
+from dotenv import load_dotenv, find_dotenv
+from hexbytes import HexBytes
 
 from eth_account import Account
 from eth_account.signers.local import LocalAccount
 from web3 import Web3
 from web3.middleware import ExtraDataToPOAMiddleware, SignAndSendRawMiddlewareBuilder
+
+from Crypto.Cipher import AES
+from Crypto.Hash import SHA256
+from Crypto.Protocol.KDF import HKDF
+from ecdsa import SECP256k1, SigningKey, VerifyingKey
+from ecdsa.ellipticcurve import Point
+from Crypto.Random import get_random_bytes
 
 http_methods = {
    "GET"    : 0,
@@ -15,6 +24,20 @@ http_methods = {
    "OPTIONS": 5,
    "TRACE"  : 6
 }
+
+def encrypt(plaintext, pk):
+    nonce = get_random_bytes(16)
+    r = int.from_bytes(get_random_bytes(32),'little')
+    ephemeral_priv = SigningKey.from_secret_exponent(r, curve=SECP256k1)
+    shared_point = pk * r
+    ephemeral = ephemeral_priv.verifying_key.pubkey.point
+    symm_key = HKDF(b'\x04' + ephemeral.to_bytes() + b'\x04' + shared_point.to_bytes(), 32, salt=None, hashmod=SHA256)
+    cipher = AES.new(symm_key, AES.MODE_GCM, nonce=nonce)
+    ciphertext, tag = cipher.encrypt_and_digest(plaintext)
+    return ephemeral.to_bytes() + nonce + tag + ciphertext
+
+def encrypt_pairs(pairs, encr_fun):
+    return [{"key": x["key"], "ciphertext": encr_fun(x["value"])}  for x in pairs]
 
 def init_web3(config):
     w3 = Web3(Web3.HTTPProvider(config["rpc_url"]))
@@ -38,10 +61,10 @@ def create_request(w3, contract, request) -> bytes:
     return tx_receipt["logs"][0]["data"]
 
 
-def create_patch(w3, contract, patch) -> bytes:
+def create_patch(w3, contract, td_address, patch) -> bytes:
     if patch is None:
         return bytes.fromhex("0000000000000000000000000000000000000000000000000000000000000000")
-    tx_hash = contract.functions.addPrivatePatch(patch["td_id"], patch).transact()
+    tx_hash = contract.functions.addPrivatePatch(td_address, patch).transact()
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     return tx_receipt["logs"][0]["data"]
 
@@ -58,39 +81,60 @@ def create_response_schema(w3, contract, response_schema) -> bytes:
     return tx_receipt["logs"][0]["data"]
 
 
-def create_feed(w3, contract, request_id, patch_id, schema_id, filter_id):
-    tx_hash = contract.functions.addFeed(request_id, patch_id, schema_id, filter_id).transact()
+def create_flow(w3, contract, request_id, patch_id, schema_id, filter_id, consumer, callback, gas_limit):
+    tx_hash = contract.functions.addFeed(request_id, patch_id, schema_id, filter_id, consumer, callback, gas_limit).transact()
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
     return tx_receipt["logs"][0]["data"]
 
 
 if __name__ == "__main__":
+    load_dotenv(find_dotenv())
     with open("config.json", "r") as f:
         config = json.loads(f.read())
     config["secret_key"] = os.environ.get("SECRET_KEY")
 
+    pk_bytes = bytes.fromhex(config['td_pubkey'][2:])
+    pk = Point.from_bytes(SECP256k1.curve, pk_bytes)
+
     w3 = init_web3(config)
 
-    with open("FeedRegistry.json", 'r') as f:
+    with open("FeedRegistryABI.json", 'r') as f:
         abi = json.load(f)
-        contract = init_contract(config["feed_registry"], abi, w3)
+        feed_contract = init_contract(config["oracle_pool"], abi, w3)
 
     with open(config["feed_file"], "r") as f:
         feed = json.load(f)
 
     feed["request"]["method"] = http_methods[feed["request"]["method"].upper()]
 
-    request_id = create_request(w3, contract, feed["request"])
-    print("request_id:    0x" + request_id.hex())
+    encr = lambda x: encrypt(x.encode(), pk)
+    p = feed["patch"]
+    feed = {
+            "patch" : \
+                { x : encr(p[x]) for x in ["body", "pathSuffix"] } | \
+                { x : encrypt_pairs(p[x], encr) for x in ["headers", "parameters"] }
+    } | {x : feed[x] for x in ["request", "filter", "schema"]}
 
-    patch_id = create_patch(w3, contract, feed["patch"])
-    print("patch_id:      0x" + patch_id.hex())
+    #request_id = create_request(w3, feed_contract, feed["request"])
+    #print("request_id:    0x" + request_id.hex())
 
-    schema_id = create_response_schema(w3, contract, feed["schema"])
+#    patch_id = create_patch(w3, feed_contract, config["td_address"], feed["patch"])
+#    print("patch_id:      0x" + patch_id.hex())
+
+    schema_id = create_response_schema(w3, feed_contract, feed["schema"])
     print("schema_id:     0x" + schema_id.hex())
 
-    filter_id = create_jq_filter(w3, contract, feed["filter"])
+    filter_id = create_jq_filter(w3, feed_contract, feed["filter"])
     print("filter_id:     0x" + filter_id.hex())
 
-    feed_id = create_feed(w3, contract, request_id, patch_id, schema_id, filter_id)
-    print("feed_id:       0x" + feed_id.hex())
+    #flow_id = create_flow(w3, \
+    #        feed_contract, \
+    #        request_id, \
+    #        patch_id, \
+    #        schema_id, \
+    #        filter_id, \
+    #        config["consumer"], \
+    #        config["callback"], \
+    #        config["gas_limit"])
+
+    #print("flow_id:       0x" + flow_id.hex())
