@@ -34,8 +34,8 @@ interface IQuexActionRegistry {
 
     event RequestCreated(uint256 requestId, uint256 flowId, address oraclePool);
 
-    function pushData(OracleMessage memory message, ETHSignature memory signature, uint256 flowId, address tdAddress) external payable;
+    function pushData(OracleMessage memory message, ETHSignature memory signature, uint256 flowId, uint256 tdId) external payable;
     function createRequest(uint256 flowId) external payable returns (uint256 requestId);
-    function fulfillRequest(OracleMessage memory message, ETHSignature memory signature, uint256 requestId, address tdAddress) external;
+    function fulfillRequest(OracleMessage memory message, ETHSignature memory signature, uint256 requestId, uint256 tdId) external;
     function getRequestFee(uint256 flowId) external view returns (uint256 nativeFee, uint256 gasFee);
 }

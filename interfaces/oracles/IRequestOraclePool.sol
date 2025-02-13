@@ -62,7 +62,7 @@ interface IRequestOraclePool {
 
     function addRequest(HTTPRequest memory request) external returns (bytes32 requestId);
 
-    function addPrivatePatch(address tdAddress, HTTPPrivatePatch memory privatePatch) external returns (bytes32 patchId);
+    function addPrivatePatch(uint256 tdId, HTTPPrivatePatch memory privatePatch) external returns (bytes32 patchId);
 
     function addJqFilter(string memory jqFilter) external returns (bytes32 filterId);
 
@@ -80,7 +80,7 @@ interface IRequestOraclePool {
 
     function getAction(uint256 actionId) external view returns (bytes memory);
 
-    function getActionTD(uint256 actionId) external view returns (address tdAddress);
+    function getActionTD(uint256 actionId) external view returns (uint256 tdId);
 
-    function startRequest(uint256 flowId) external returns (uint256 requestRunId);
+    function startRequest(uint256 flowId) external payable returns (uint256 requestRunId);
 }

@@ -41,6 +41,9 @@ struct TDQuote {
 }
 
 interface ITrustDomainRegistry {
+    event QEReportAdded(uint256 qeId);
+    event TDReportAdded(uint256 tdId);
+
     function addPlatformCAKey(
         uint256 x,
         uint256 y,
@@ -80,7 +83,7 @@ interface ITrustDomainRegistry {
         bytes32 authentication_data,
         uint256 r,
         uint256 s
-    ) external returns (address tdAddress);
+    ) external returns (uint256 tdId);
 
     function getRootKey() external view returns(ECKey memory);
     
@@ -88,13 +91,15 @@ interface ITrustDomainRegistry {
 
     function getPCK(uint256 platformSerial, uint256 pckSerial) external view returns (ECKey memory);
 
-    function isTDValid(address tdAddress) external view returns (bool);
+    function isTDValid(uint256 tdId) external view returns (bool);
 
-    function getTD(address tdAddress) external view returns (TDQuote memory);
+    function getTDSignerAddress(uint256 tdId) external view returns (address);
+
+    function getTD(uint256 tdId) external view returns (TDQuote memory);
 
     function getQE(uint256 qeId) external view returns (QEReport memory);
 
-    function getQEId(address tdAddress) external view returns (uint256 qeId);
+    function getQEId(uint256 tdId) external view returns (uint256 qeId);
 
     function getQEAuthority(uint256 qeId) external view returns (uint256 platformSerial, uint256 pckSerial);
 }
