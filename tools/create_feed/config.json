@@ -1,10 +1,10 @@
 {
     "rpc_url": "https://arb1.arbitrum.io/rpc",
     "oracle_pool": "0x42701a7ADC7eF01d222A236C7d6498878109698f",
-    "feed_file": "quex_request.json",
-    "gas_limit": 600000,
+    "request_file": "quex_request.json",
+    "gas_limit": 700000,
     "td_pubkey": "0x1740f4ac5cdec0a9fa95e1f67e72b0e845b384fa7790c5e12686d25e491a4615e1fabdb369c37b28007b19b1b314fe410466dbeb8a2d3bcaf6685c9b8615046f",
-    "td_address": "0x69f40F943102663dc7E2bfBaF0C9Fc2047A3E334",
-    "consumer": "0x327EEb865f29838adC9beC7264206524D9287092",
+    "td_id": 15320933194208767553594122098749257723370727481910398084861343719395487471375,
+    "consumer": "0x13575375e70b7f840764A8884B3302556535D8F7",
     "callback": "0x8f0b0698"
 }

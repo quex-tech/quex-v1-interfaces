@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from dotenv import load_dotenv, find_dotenv
 from hexbytes import HexBytes
 
@@ -82,9 +83,9 @@ def create_response_schema(w3, contract, response_schema) -> bytes:
 
 
 def create_flow(w3, contract, request_id, patch_id, schema_id, filter_id, consumer, callback, gas_limit):
-    tx_hash = contract.functions.addFeed(request_id, patch_id, schema_id, filter_id, consumer, callback, gas_limit).transact()
+    tx_hash = contract.functions.addFlow(request_id, patch_id, schema_id, filter_id, consumer, callback, gas_limit).transact()
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    return tx_receipt["logs"][0]["data"]
+    return tx_receipt["logs"][-1]["data"]
 
 
 if __name__ == "__main__":
@@ -98,43 +99,46 @@ if __name__ == "__main__":
 
     w3 = init_web3(config)
 
-    with open("FeedRegistryABI.json", 'r') as f:
+    with open("RequestOraclePoolABI.json", 'r') as f:
         abi = json.load(f)
-        feed_contract = init_contract(config["oracle_pool"], abi, w3)
+        contract = init_contract(config["oracle_pool"], abi, w3)
 
-    with open(config["feed_file"], "r") as f:
-        feed = json.load(f)
+    with open(config["request_file"], "r") as f:
+        request = json.load(f)
 
-    feed["request"]["method"] = http_methods[feed["request"]["method"].upper()]
+    request["request"]["method"] = http_methods[request["request"]["method"].upper()]
 
     encr = lambda x: encrypt(x.encode(), pk)
-    p = feed["patch"]
-    feed = {
-            "patch" : \
-                { x : encr(p[x]) for x in ["body", "pathSuffix"] } | \
-                { x : encrypt_pairs(p[x], encr) for x in ["headers", "parameters"] }
-    } | {x : feed[x] for x in ["request", "filter", "schema"]}
+    request_id = create_request(w3, contract, request["request"])
+    print("request_id:    0x" + request_id.hex())
 
-    #request_id = create_request(w3, feed_contract, feed["request"])
-    #print("request_id:    0x" + request_id.hex())
+    if "patch" in request:
+        p = request["patch"]
+        request = {
+                "patch" : \
+                    { x : encr(p[x]) for x in ["body", "pathSuffix"] } | \
+                    { x : encrypt_pairs(p[x], encr) for x in ["headers", "parameters"] }
+        } | {x : request[x] for x in ["request", "filter", "schema"]}
 
-#    patch_id = create_patch(w3, feed_contract, config["td_address"], feed["patch"])
-#    print("patch_id:      0x" + patch_id.hex())
+        patch_id = create_patch(w3, contract, config["td_id"], request["patch"])
+    else:
+        patch_id = b'\x00'*32;
+    print("patch_id:      0x" + patch_id.hex())
 
-    schema_id = create_response_schema(w3, feed_contract, feed["schema"])
+    schema_id = create_response_schema(w3, contract, request["schema"])
     print("schema_id:     0x" + schema_id.hex())
 
-    filter_id = create_jq_filter(w3, feed_contract, feed["filter"])
+    filter_id = create_jq_filter(w3, contract, request["filter"])
     print("filter_id:     0x" + filter_id.hex())
 
-    #flow_id = create_flow(w3, \
-    #        feed_contract, \
-    #        request_id, \
-    #        patch_id, \
-    #        schema_id, \
-    #        filter_id, \
-    #        config["consumer"], \
-    #        config["callback"], \
-    #        config["gas_limit"])
+    flow_id = create_flow(w3, \
+            contract, \
+            request_id, \
+            patch_id, \
+            schema_id, \
+            filter_id, \
+            config["consumer"], \
+            config["callback"], \
+            config["gas_limit"])
 
-    #print("flow_id:       0x" + flow_id.hex())
+    print("flow_id:       0x" + flow_id.hex())
