@@ -45,6 +45,14 @@ struct HTTPPrivatePatch {
     RequestHeaderPatch[] headers;
     QueryParameterPatch[] parameters;
     bytes body;
+    address tdAddress;
+}
+
+struct RequestAction {
+    HTTPRequest request;
+    HTTPPrivatePatch patch;
+    string responseSchema;
+    string jqFilter;
 }
 
 interface IRequestOraclePool {
@@ -57,30 +65,25 @@ interface IRequestOraclePool {
     event PrivatePatchAdded(bytes32 patchId);
     event JqFilterAdded(bytes32 filterId);
     event ResultSchemaAdded(bytes32 schemaId);
-    
-    event RequestActionAdded(uint256 feedId);
+
+    event RequestActionAdded(uint256 actionId);
 
     function addRequest(HTTPRequest memory request) external returns (bytes32 requestId);
 
-    function addPrivatePatch(uint256 tdId, HTTPPrivatePatch memory privatePatch) external returns (bytes32 patchId);
+    function addPrivatePatch(HTTPPrivatePatch memory privatePatch) external returns (bytes32 patchId);
 
     function addJqFilter(string memory jqFilter) external returns (bytes32 filterId);
 
     function addResponseSchema(string memory responseSchema) external returns (bytes32 schemaId);
 
-    function addFlow(
+    function addActionByParts(
         bytes32 requestId,
         bytes32 patchId,
         bytes32 schemaId,
-        bytes32 filterId,
-        address consumer,
-        bytes4 callback,
-        uint256 gasLimit
-    ) external returns (uint256 flowId);
+        bytes32 filterId
+    ) external returns (uint256 actionId);
+
+    function addAction(RequestAction memory requestAction) external returns (uint256 actionId);
 
     function getAction(uint256 actionId) external view returns (bytes memory);
-
-    function getActionTD(uint256 actionId) external view returns (uint256 tdId);
-
-    function startRequest(uint256 flowId) external payable returns (uint256 requestRunId);
 }
