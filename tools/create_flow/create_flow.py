@@ -54,9 +54,9 @@ def encrypt_pairs(pairs, encr_fun):
     return [{"key": x["key"], "ciphertext": encr_fun(x["value"])}  for x in pairs]
 
 def init_web3(config):
-    w3 = Web3(Web3.HTTPProvider(config["rpc_url"]))
+    w3 = Web3(Web3.HTTPProvider(config["chain"]["rpc_url"]))
     w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
-    account: LocalAccount = Account.from_key(config["secret_key"])
+    account: LocalAccount = Account.from_key(config["chain"]["secret_key"])
     w3.middleware_onion.add(SignAndSendRawMiddlewareBuilder.build(account))
 
     w3.eth.default_account = account.address
@@ -93,8 +93,8 @@ if __name__ == "__main__":
     with open(config["request_file"], 'r') as f:
         request = json.load(f)
 
-    if "secret_key" not in config:
-        config["secret_key"] = os.environ.get("SECRET_KEY")
+    if "secret_key" not in config["chain"]:
+        config["chain"]["secret_key"] = os.environ.get("SECRET_KEY")
 
     pk_bytes = bytes.fromhex(config['td_pubkey'][2:])
     pk = Point.from_bytes(SECP256k1.curve, pk_bytes)
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     request["request"]["body"] = request["request"]["body"].encode()
 
     action_id = create_action(w3, pool_contract, request)
-    print("action_id:       0x" + action_id.hex())
+    print("action_id:    0x" + action_id.hex())
 
     flow = {
             "gasLimit": config["gas_limit"],
@@ -133,4 +133,9 @@ if __name__ == "__main__":
 
     flow_id = create_flow(w3, core_contract, flow)
 
-    print("flow_id:       0x" + flow_id.hex())
+    print("flow_id:      0x" + flow_id.hex())
+
+    native_fee, gas = core_contract.functions.getRequestFee(int.from_bytes(flow_id, 'big')).call()
+
+    print(f"Native fee:   {native_fee}")
+    print(f"Gas to cover: {gas}")
