@@ -17,6 +17,9 @@ from ecdsa import SECP256k1, SigningKey, VerifyingKey
 from ecdsa.ellipticcurve import Point
 from Crypto.Random import get_random_bytes
 
+action_topic = HexBytes('0x6ea08420309a5e903e7ff3f87843a579a9ceeed7c42dea42b08ba966da56ee01')
+flow_topic = HexBytes('0xab4c08448aca89f38b8d830858d16c0d9b674b0b1a1154412c4a2b79778ef5d6')
+
 http_methods = {
    "GET"    : 0,
    "POST"   : 1,
@@ -72,14 +75,12 @@ def init_contract(contract_config, w3):
 def create_action(w3, contract, action):
     tx_hash = contract.functions.addAction(action).transact()
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    return tx_receipt["logs"][0]["data"]
-
+    return [x["data"] for x in tx_receipt["logs"] if action_topic in x["topics"]][0]
 
 def create_flow(w3, contract, flow):
     tx_hash = contract.functions.createFlow(flow).transact()
     tx_receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
-    return tx_receipt["logs"][0]["data"]
-
+    return [x["data"] for x in tx_receipt["logs"] if flow_topic in x["topics"]][0]
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:

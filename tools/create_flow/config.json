@@ -13,6 +13,6 @@
     "request_file": "request.json",
     "gas_limit": 700000,
     "td_pubkey": "0xd54a40ed58733b4aa39fd819b51656ab0812c825280216580ba0fd0ffbfd655074d63410e510885ec7966bfa85f5ba76f9641380ce3d8b7cc6ac2bffbc1f7fd6",
-    "consumer": "0x65C81388053236619440D00208724a0e5F188a13",
+    "consumer": "0x39d28D1eB9e9429C91553e447e9C73E154B17005",
     "callback": "0x8f0b0698"
 }
