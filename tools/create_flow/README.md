@@ -26,7 +26,7 @@ $ cat .env
 SECRET_KEY=5a44...
 ```
 + Set it in the config file as `config.chain.secret_key`
-5. Configure your HTTPS request in `request.json`. Full set of options to describe your request can be found in [IV1FeedRegistry models](../../interfaces/oracles/IRequestOraclePool.sol). In case your request does not need encrypted patch, delete `request.patch` field completely
+5. Configure your HTTPS request in `request.json`. Full set of options to describe your request can be found in [IRequestOraclePool models](../../interfaces/oracles/IRequestOraclePool.sol). In case your request does not need encrypted patch, delete `request.patch` field completely
 6. Edit `config.json` according to your needs:
 + `config.chain.rpc_url` must contain RPC URL of chain you are working on
 + `config.oracle_pool` and `config.quex_core` must contain corresponding addresses of Quex Contracts on this chain, and local paths to ABI files

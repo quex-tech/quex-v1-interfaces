@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     request["request"]["method"] = http_methods[request["request"]["method"].upper()]
 
-    encr = lambda x: encrypt(x.encode(), pk)
+    encr = lambda x: encrypt(x.encode(), pk) if x != "" else b''
 
     if "patch" in request:
         p = request["patch"]
