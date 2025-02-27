@@ -1,0 +1,33 @@
+{
+    "request": {
+        "method": "GET",
+        "host": "www.binance.com",
+        "path": "/api",
+        "headers": [],
+        "body": "",
+        "parameters": [
+            {
+                "key": "limit",
+                "value": "5"
+            }
+        ]
+    },
+    "jqFilter": "[.lastUpdateId]+([.bids, .asks] | map(map(map(tonumber*100000000|floor))))",
+    "responseSchema": "(uint256,(uint256,uint256)[5],(uint256,uint256)[5])",
+    "patch": {
+        "pathSuffix": "/v3/depth",
+        "headers": [
+            {
+                "key": "Content-Type",
+                "value": "application/json"
+            }
+        ],
+        "parameters": [
+            {
+                "key": "symbol",
+                "value": "BTCUSDT"
+            }
+        ],
+        "body": ""
+    }
+}

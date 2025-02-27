@@ -1,10 +1,18 @@
 {
-    "rpc_url": "https://arb1.arbitrum.io/rpc",
-    "oracle_pool": "0x42701a7ADC7eF01d222A236C7d6498878109698f",
-    "request_file": "quex_request.json",
+    "chain": {
+        "rpc_url": "https://sepolia-rollup.arbitrum.io/rpc"
+    },
+    "oracle_pool": {
+        "address": "0x957E16D5bfa78799d79b86bBb84b3Ca34D986439",
+        "abi": "RequestOraclePoolABI.json"
+    },
+    "quex_core": {
+        "address": "0xD8a37e96117816D43949e72B90F73061A868b387",
+        "abi": "QuexFlowRegistryABI.json"
+    },
+    "request_file": "request.json",
     "gas_limit": 700000,
-    "td_pubkey": "0x1740f4ac5cdec0a9fa95e1f67e72b0e845b384fa7790c5e12686d25e491a4615e1fabdb369c37b28007b19b1b314fe410466dbeb8a2d3bcaf6685c9b8615046f",
-    "td_id": 15320933194208767553594122098749257723370727481910398084861343719395487471375,
-    "consumer": "0x13575375e70b7f840764A8884B3302556535D8F7",
+    "td_pubkey": "0xd54a40ed58733b4aa39fd819b51656ab0812c825280216580ba0fd0ffbfd655074d63410e510885ec7966bfa85f5ba76f9641380ce3d8b7cc6ac2bffbc1f7fd6",
+    "consumer": "0x65C81388053236619440D00208724a0e5F188a13",
     "callback": "0x8f0b0698"
 }
