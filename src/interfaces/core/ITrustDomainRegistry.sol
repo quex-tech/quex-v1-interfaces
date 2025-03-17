@@ -67,17 +67,13 @@ interface ITrustDomainRegistry {
         uint256 s
     ) external;
 
-    function addQE(
-        QEReport memory qeReport,
-        uint256 platformSerial,
-        uint256 pckSerial,
-        uint256 r,
-        uint256 s
-    ) external returns (uint256 qeId);
+    function addQE(QEReport memory qeReport, uint256 platformSerial, uint256 pckSerial, uint256 r, uint256 s)
+        external
+        returns (uint256 qeId);
 
     function addTD(
         TDQuote memory tdQuote,
-        uint qeId,
+        uint256 qeId,
         uint256 x,
         uint256 y,
         bytes32 authentication_data,
@@ -85,9 +81,9 @@ interface ITrustDomainRegistry {
         uint256 s
     ) external returns (uint256 tdId);
 
-    function getRootKey() external view returns(ECKey memory);
-    
-    function getPlatformCAKey(uint256 serial) external view returns(ECKey memory);
+    function getRootKey() external view returns (ECKey memory);
+
+    function getPlatformCAKey(uint256 serial) external view returns (ECKey memory);
 
     function getPCK(uint256 platformSerial, uint256 pckSerial) external view returns (ECKey memory);
 
