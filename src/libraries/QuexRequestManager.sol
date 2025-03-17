@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
-import "quex-v1-interfaces/interfaces/core/IQuexActionRegistry.sol";
+import "src/interfaces/core/IQuexActionRegistry.sol";
 
 /**
  * @title QuexFlowManager
