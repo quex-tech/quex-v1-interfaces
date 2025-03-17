@@ -1,24 +1,66 @@
-# quex-v1-interfaces
+## Foundry
 
-## Description
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-This repository contains the set of interfaces for V1 of Quex smart-contracts together with a helper tool for
-interacting with Quex Request Oracle Pool
+Foundry consists of:
 
-## Rationale
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-Quex provides the set of oracles for EVM-compatible blockchains utilizing Trusted Execution Environment (TEE)
-attestation. The current set of contracts performs on-chain verification of Intel Trusted Domain Extensions (TDX)
-quotes together with the verification of the certificate chain up to the Intel SGX root CA. The software inside TD
-issues the attestation quote containing the public key generated inside the domain.
+## Documentation
 
-This quote is signed by standard Intel DCAP enclave and registered on-chain together with all the necessary
-certificates. From that point, the data signed with the corresponding private key can be set as trusted. To distinguish
-different types of workloads, we use the concept of Oracle Pools. Quex Request Oracle Pool is responsible for performing
-requests to external TLS-protected HTTP endpoints and post-processing the responses. The particular Trust Domain workload is
-defined by so-called action. Data delivery process is arranged into flows. For more details, please refer to our
-[documentation](https://docs.quex.tech/)
+https://book.getfoundry.sh/
 
-## Flow Creation Tool
+## Usage
 
-In order to get understanding of the flow creation tool usage, please see the corresponding [page](tools/create_flow)
+### Build
+
+```shell
+$ forge build
+```
+
+### Test
+
+```shell
+$ forge test
+```
+
+### Format
+
+```shell
+$ forge fmt
+```
+
+### Gas Snapshots
+
+```shell
+$ forge snapshot
+```
+
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
