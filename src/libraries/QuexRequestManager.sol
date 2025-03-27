@@ -3,6 +3,9 @@ pragma solidity ^0.8.22;
 
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "src/interfaces/core/IQuexActionRegistry.sol";
+import "src/libraries/FlowBuilder.sol";
+
+using FlowBuilder for FlowBuilder.FlowConfig;
 
 /**
  * @title QuexFlowManager
@@ -49,6 +52,14 @@ abstract contract QuexRequestManager is Ownable {
     function setFlowId(uint256 flowId) public virtual onlyOwner {
         require(_flowId == 0, "Flow ID is already set");
         _flowId = flowId;
+    }
+
+    /**
+     * @notice Build flow from config and register it in FlowRegistry
+     */
+    function registerFlow(FlowBuilder.FlowConfig memory config) public virtual onlyOwner {
+        uint256 flowId = config.build();
+        setFlowId(flowId);
     }
 
     /**
