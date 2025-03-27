@@ -32,7 +32,10 @@ library FlowBuilder {
      * @param path Target HTTP path (e.g., "/tvl/dydx").
      * @return config Initialized FlowConfig with default method, schema, filter, and gas limit.
      */
-    function create(address quexCore, address oraclePool, string memory host, string memory path) internal pure returns (FlowConfig memory config)
+    function create(address quexCore, address oraclePool, string memory host, string memory path)
+        internal
+        pure
+        returns (FlowConfig memory config)
     {
         config.flowRegistry = quexCore;
         config.oraclePool = oraclePool;
@@ -53,7 +56,7 @@ library FlowBuilder {
      * @param filter jq filter string. See https://docs.quex.tech/developers/https_pool/jq_subset for supported post-processing operations.
      * @return Updated FlowConfig.
      */
-    function withFilter(FlowConfig memory config, string memory filter) internal pure returns (FlowConfig memory){
+    function withFilter(FlowConfig memory config, string memory filter) internal pure returns (FlowConfig memory) {
         config.jqFilter = filter;
         return config;
     }
@@ -64,7 +67,7 @@ library FlowBuilder {
      * @param schema Schema string.
      * @return Updated FlowConfig.
      */
-    function withSchema(FlowConfig memory config, string memory schema) internal pure returns (FlowConfig memory){
+    function withSchema(FlowConfig memory config, string memory schema) internal pure returns (FlowConfig memory) {
         config.responseSchema = schema;
         return config;
     }
@@ -76,7 +79,11 @@ library FlowBuilder {
      * @param callback Selector of the callback function.
      * @return Updated FlowConfig.
      */
-    function withCallback(FlowConfig memory config, address consumer, bytes4 callback) internal pure returns (FlowConfig memory){
+    function withCallback(FlowConfig memory config, address consumer, bytes4 callback)
+        internal
+        pure
+        returns (FlowConfig memory)
+    {
         config.consumer = consumer;
         config.callback = callback;
         return config;
