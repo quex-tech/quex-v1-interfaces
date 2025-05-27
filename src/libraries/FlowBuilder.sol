@@ -90,6 +90,17 @@ library FlowBuilder {
     }
 
     /**
+     * @notice Sets the gas limit for the flow.
+     * @param config Existing FlowConfig.
+     * @param gasLimit Gas limit to set.
+     * @return Updated FlowConfig.
+     */
+    function withGasLimit(FlowConfig memory config, uint256 gasLimit) internal pure returns (FlowConfig memory) {
+        config.gasLimit = gasLimit;
+        return config;
+    }
+
+    /**
      * @notice Sets the method for the HTTP request.
      * @param config Existing FlowConfig.
      * @param method Method to set.
