@@ -15,12 +15,10 @@ library FlowBuilder {
     struct FlowConfig {
         address oraclePool;
         address flowRegistry;
-
         HTTPRequest request;
         HTTPPrivatePatch patch;
         string jqFilter;
         string responseSchema;
-
         address consumer;
         bytes4 callback;
         uint256 gasLimit;
@@ -97,11 +95,7 @@ library FlowBuilder {
      * @param method Method to set.
      * @return Updated FlowConfig.
      */
-    function withMethod(FlowConfig memory config, RequestMethod method)
-        internal
-        pure
-        returns (FlowConfig memory)
-    {
+    function withMethod(FlowConfig memory config, RequestMethod method) internal pure returns (FlowConfig memory) {
         config.request.method = method;
         return config;
     }
@@ -142,11 +136,7 @@ library FlowBuilder {
      * @param body Body to set.
      * @return Updated FlowConfig.
      */
-    function withBody(FlowConfig memory config, bytes memory body)
-        internal
-        pure
-        returns (FlowConfig memory)
-    {
+    function withBody(FlowConfig memory config, bytes memory body) internal pure returns (FlowConfig memory) {
         config.request.body = body;
         return config;
     }
@@ -202,11 +192,7 @@ library FlowBuilder {
      * @param body Private body to set.
      * @return Updated FlowConfig.
      */
-    function withPrivateBody(FlowConfig memory config, bytes memory body)
-        internal
-        pure
-        returns (FlowConfig memory)
-    {
+    function withPrivateBody(FlowConfig memory config, bytes memory body) internal pure returns (FlowConfig memory) {
         config.patch.body = body;
         return config;
     }
