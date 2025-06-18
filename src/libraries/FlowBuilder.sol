@@ -153,6 +153,17 @@ library FlowBuilder {
     }
 
     /**
+     * @notice Sets the td address for the private patch. Required if the private patch is used.
+     * @param config Existing FlowConfig.
+     * @param tdAddress Td address to set.
+     * @return Updated FlowConfig.
+     */
+    function withTdAddress(FlowConfig memory config, address tdAddress) internal pure returns (FlowConfig memory) {
+        config.patch.tdAddress = tdAddress;
+        return config;
+    }
+
+    /**
      * @notice Sets the private path suffix for the HTTP request.
      * @param config Existing FlowConfig.
      * @param pathSuffix Private path suffix to set.
