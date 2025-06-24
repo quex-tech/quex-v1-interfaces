@@ -15,6 +15,7 @@ struct DataItem {
 struct OracleMessage {
     uint256 actionId;
     DataItem dataItem;
+    address relayer;
 }
 
 struct ETHSignature {
