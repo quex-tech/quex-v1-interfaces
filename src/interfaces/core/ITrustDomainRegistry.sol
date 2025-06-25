@@ -41,8 +41,15 @@ struct TDQuote {
 }
 
 interface ITrustDomainRegistry {
+    event PlatformCAAdded(uint256 serial);
+    event PCKAdded(uint256 platformSerial, uint256 pckSerial);
     event QEReportAdded(uint256 qeId);
     event TDReportAdded(uint256 tdId);
+
+    event PlatformCARevoked(uint256 serial);
+    event PCKRevoked(uint256 platformSerial, uint256 pckSerial);
+    event QEReportRevoked(uint256 qeId);
+    event TDReportRevoked(uint256 tdId);
 
     function addPlatformCAKey(
         uint256 x,
@@ -67,13 +74,17 @@ interface ITrustDomainRegistry {
         uint256 s
     ) external;
 
-    function addQE(QEReport memory qeReport, uint256 platformSerial, uint256 pckSerial, uint256 r, uint256 s)
-        external
-        returns (uint256 qeId);
+    function addQE(
+        QEReport memory qeReport,
+        uint256 platformSerial,
+        uint256 pckSerial,
+        uint256 r,
+        uint256 s
+    ) external returns (uint256 qeId);
 
     function addTD(
         TDQuote memory tdQuote,
-        uint256 qeId,
+        uint qeId,
         uint256 x,
         uint256 y,
         bytes32 authentication_data,
@@ -81,9 +92,9 @@ interface ITrustDomainRegistry {
         uint256 s
     ) external returns (uint256 tdId);
 
-    function getRootKey() external view returns (ECKey memory);
-
-    function getPlatformCAKey(uint256 serial) external view returns (ECKey memory);
+    function getRootKey() external view returns(ECKey memory);
+    
+    function getPlatformCAKey(uint256 serial) external view returns(ECKey memory);
 
     function getPCK(uint256 platformSerial, uint256 pckSerial) external view returns (ECKey memory);
 
@@ -98,10 +109,36 @@ interface ITrustDomainRegistry {
     function getQEId(uint256 tdId) external view returns (uint256 qeId);
 
     function getQEAuthority(uint256 qeId) external view returns (uint256 platformSerial, uint256 pckSerial);
+
+    function getPCKCounterByPlatformCA(uint256 platformSerial) external view returns (uint256);
+    
+    function getQECounterByProcessorPCK(uint256 platformSerial, uint256 pckSerial) external view returns (uint256);
+
+    function getTDCounterByQE(uint256 qeId) external view returns (uint256);
+
+    function isTeeTcbSvnAllowed(bytes16 tcbSvn) external view returns (bool);
+
+    function isCpuSvnAllowed(bytes16 cpuSvn) external view returns (bool);
+
+    function getTeeTcbSvnTDCounter(bytes16 tcbSvn) external view returns (uint256);
+
+    function getCpuSvnQECounter(bytes16 cpuSvn) external view returns (uint256);
 }
 
 interface ITrustDomainRegistryExtended is ITrustDomainRegistry {
     function revokePCK(uint256 platformSerial, uint256 pckSerial) external;
 
     function revokePlatformCA(uint256 serial) external;
+
+    function revokeQE(uint256 qeId) external;
+
+    function revokeTD(uint256 tdId) external;
+
+    function allowTeeTcbSvn(bytes16 tcbSvn) external;
+
+    function allowCpuSvn(bytes16 cpuSvn) external;
+
+    function revokeTeeTcbSvn(bytes16 tcbSvn) external;
+
+    function revokeCpuSvn(bytes16 cpuSvn) external;
 }

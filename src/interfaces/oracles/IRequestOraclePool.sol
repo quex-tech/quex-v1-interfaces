@@ -76,9 +76,12 @@ interface IRequestOraclePool {
 
     function addResponseSchema(string memory responseSchema) external returns (bytes32 schemaId);
 
-    function addActionByParts(bytes32 requestId, bytes32 patchId, bytes32 schemaId, bytes32 filterId)
-        external
-        returns (uint256 actionId);
+    function addActionByParts(
+        bytes32 requestId,
+        bytes32 patchId,
+        bytes32 schemaId,
+        bytes32 filterId
+    ) external returns (uint256 actionId);
 
     function addAction(RequestAction memory requestAction) external returns (uint256 actionId);
 
