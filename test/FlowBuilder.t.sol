@@ -2,9 +2,9 @@
 pragma solidity ^0.8.22;
 
 import "forge-std/Test.sol";
-import "../libraries/FlowBuilder.sol";
-import "../interfaces/oracles/IRequestOraclePool.sol";
-import "../interfaces/core/IFlowRegistry.sol";
+import "../src/libraries/FlowBuilder.sol";
+import "../src/interfaces/oracles/IRequestOraclePool.sol";
+import "../src/interfaces/core/IFlowRegistry.sol";
 
 contract FlowBuilderTest is Test {
     using FlowBuilder for FlowBuilder.FlowConfig;
