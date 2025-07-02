@@ -17,14 +17,15 @@
   },
   "homepage": "https://github.com/quex-tech/quex-v1-interfaces#readme",
   "scripts": {
-    "lint:check": "yarn lint:solhint && forge fmt --check",
-    "lint:fix": "forge fmt && yarn lint:solhint --fix",
-    "lint:solhint": "solhint -c .solhint.json './(src|test|script)/**/*.sol'",
+    "lint:check": "yarn lint:sol-logic && yarn lint:sol-tests && forge fmt --check",
+    "lint:fix": "forge fmt && yarn lint:sol-tests --fix && yarn lint:sol-logic --fix",
+    "lint:sol-logic": "solhint -c .solhint.json 'src/**/*.sol' 'script/**/*.sol'",
+    "lint:sol-tests": "solhint -c .solhint.tests.json 'test/**/*.sol'",
     "test": "forge test -vvv"
   },
   "lint-staged": {
     "*.{js,css,md,ts,sol}": "forge fmt",
-    "*.sol": "solhint --fix './(src|test|script)/**/*.sol'"
+    "*.sol": "solhint --fix './(src|test|script)/**/*.sol"
   },
   "devDependencies": {
     "husky": ">=8",
