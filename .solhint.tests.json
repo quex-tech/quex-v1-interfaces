@@ -1,0 +1,8 @@
+{
+  "extends": "solhint:recommended",
+  "rules": {
+    "interface-starts-with-i": "warn",
+    "func-visibility": ["warn", { "ignoreConstructors": true }],
+    "one-contract-per-file": "warn"
+  }
+}

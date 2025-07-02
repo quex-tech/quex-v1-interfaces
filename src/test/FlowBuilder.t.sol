@@ -98,7 +98,7 @@ contract FlowBuilderTest is Test {
         FlowBuilder.FlowConfig memory config =
             FlowBuilder.create(TEST_QUEX_CORE, TEST_ORACLE_POOL, "api.example.com", "/test");
 
-        bytes memory body = bytes('{"key": "value"}');
+        bytes memory body = bytes("{\"key\": \"value\"}");
         config = FlowBuilder.withBody(config, body);
         assertEq(keccak256(config.request.body), keccak256(body));
     }
@@ -149,7 +149,7 @@ contract FlowBuilderTest is Test {
         FlowBuilder.FlowConfig memory config =
             FlowBuilder.create(TEST_QUEX_CORE, TEST_ORACLE_POOL, "api.example.com", "/test");
 
-        bytes memory body = bytes('{"secret": "value"}');
+        bytes memory body = bytes("{\"secret\": \"value\"}");
         config = FlowBuilder.withPrivateBody(config, body);
         assertEq(keccak256(config.patch.body), keccak256(body));
     }
@@ -163,7 +163,7 @@ contract FlowBuilderTest is Test {
         headers[0] = RequestHeader({key: "Content-Type", value: "application/json"});
         QueryParameter[] memory parameters = new QueryParameter[](1);
         parameters[0] = QueryParameter({key: "key", value: "value"});
-        bytes memory body = bytes('{"key": "value"}');
+        bytes memory body = bytes("{\"key\": \"value\"}");
 
         // Private Patch
         bytes memory pathSuffix = bytes("/private");
@@ -171,7 +171,7 @@ contract FlowBuilderTest is Test {
         headersPatch[0] = RequestHeaderPatch({key: "Authorization", ciphertext: bytes("Bearer token")});
         QueryParameterPatch[] memory parametersPatch = new QueryParameterPatch[](1);
         parametersPatch[0] = QueryParameterPatch({key: "apiKey", ciphertext: bytes("secret")});
-        bytes memory bodyPatch = bytes('{"secret": "value"}');
+        bytes memory bodyPatch = bytes("{\"secret\": \"value\"}");
         address tdAddress = address(0x12345678);
 
         // Response Schema

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 
 import "src/interfaces/oracles/IRequestOraclePool.sol";
-import "src/interfaces/core/IFlowRegistry.sol";
+import "src/interfaces/core/IFlowRegistry.sol" as IFlowRegistry;
 
 /**
  * @title FlowBuilder
@@ -226,7 +226,7 @@ library FlowBuilder {
      */
     function build(FlowConfig memory config) internal returns (uint256 flowId) {
         IRequestOraclePool pool = IRequestOraclePool(config.oraclePool);
-        IFlowRegistry registry = IFlowRegistry(config.flowRegistry);
+        IFlowRegistry.IFlowRegistry registry = IFlowRegistry.IFlowRegistry(config.flowRegistry);
 
         bytes32 requestId = pool.addRequest(config.request);
         bytes32 patchId = pool.addPrivatePatch(config.patch);
@@ -235,7 +235,7 @@ library FlowBuilder {
 
         uint256 actionId = pool.addActionByParts(requestId, patchId, schemaId, filterId);
 
-        Flow memory flow = Flow({
+        IFlowRegistry.Flow memory flow = IFlowRegistry.Flow({
             gasLimit: config.gasLimit,
             actionId: actionId,
             pool: config.oraclePool,

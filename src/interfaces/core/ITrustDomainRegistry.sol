@@ -8,6 +8,7 @@ struct ECKey {
     uint256 notAfter;
 }
 
+/* solhint-disable var-name-mixedcase */
 struct QEReport {
     bytes16 CPUSVN;
     bytes4 MISCSELECT;
@@ -39,6 +40,7 @@ struct TDQuote {
     bytes32 REPORT_DATA1;
     bytes32 REPORT_DATA2;
 }
+/* solhint-enable var-name-mixedcase */
 
 interface ITrustDomainRegistry {
     event QEReportAdded(uint256 qeId);
