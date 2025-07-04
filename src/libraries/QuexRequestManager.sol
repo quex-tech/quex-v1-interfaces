@@ -69,12 +69,12 @@ abstract contract QuexRequestManager is Ownable {
     /**
      * @notice Set up subscription
      */
-    function createSubscription(address owner, address consumer) public payable virtual onlyOwner {
+    function createSubscription() public payable virtual onlyOwner {
         IDepositManager depositManager = IDepositManager(quexCoreAddress);
         _subscriptionId = depositManager.createSubscription();
-        depositManager.setOwner(_subscriptionId, owner);
+        depositManager.setOwner(_subscriptionId, this.owner());
         depositManager.deposit{value: msg.value}(_subscriptionId);
-        depositManager.addConsumer(_subscriptionId, consumer);
+        depositManager.addConsumer(_subscriptionId, address(this));
     }
 
     /**
