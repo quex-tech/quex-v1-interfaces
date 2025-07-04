@@ -21,7 +21,6 @@ using FlowBuilder for FlowBuilder.FlowConfig;
  * To modify the default behavior, override the relevant methods in a derived contract.
  */
 abstract contract QuexRequestManager is Ownable {
-
     /// @notice Reference to the Quex core
     address public quexCoreAddress;
 
@@ -70,7 +69,7 @@ abstract contract QuexRequestManager is Ownable {
     /**
      * @notice Set up subscription
      */
-    function createSubscription(address owner, address consumer) payable public virtual onlyOwner {
+    function createSubscription(address owner, address consumer) public payable virtual onlyOwner {
         IDepositManager depositManager = IDepositManager(quexCoreAddress);
         _subscriptionId = depositManager.createSubscription();
         depositManager.setOwner(_subscriptionId, owner);
