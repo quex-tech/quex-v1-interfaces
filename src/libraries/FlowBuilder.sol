@@ -24,6 +24,14 @@ library FlowBuilder {
         uint256 gasLimit;
     }
 
+    function create_new(address quexCore, address oraclePool, string memory host, string memory path)
+        internal
+        pure
+        returns (FlowConfig memory config)
+    {
+        config.flowRegistry = quexCore;
+    }
+
     /**
      * @notice Initializes a FlowConfig with basic values and defaults.
      * @param quexCore Address of the Quex Flow Registry contract. See https://docs.quex.tech/general-information/addresses for network-specific addresses.

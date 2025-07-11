@@ -2,12 +2,14 @@
     "extends": "solhint:recommended",
     "rules": {
         "func-visibility": ["warn", { "ignoreConstructors": true }],
+        "compiler-version": ["error", "^0.8.22"],
         "use-forbidden-name": "off",
         "no-inline-assembly": "off",
         "interface-starts-with-i": "warn",
         "gas-calldata-parameters": "warn",
         "gas-indexed-events": "warn",
         "gas-length-in-loops": "warn",
-        "gas-struct-packing": "warn"
+        "gas-struct-packing": "warn",
+        "one-contract-per-file": "off"
     }
 }

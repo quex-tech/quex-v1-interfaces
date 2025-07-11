@@ -2,6 +2,7 @@
     "extends": "solhint:recommended",
     "rules": {
         "func-visibility": ["warn", { "ignoreConstructors": true }],
+        "compiler-version": ["error", "^0.8.22"],
         "use-forbidden-name": "off",
         "no-inline-assembly": "off",
         "interface-starts-with-i": "warn",
