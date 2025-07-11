@@ -9,6 +9,9 @@
         "gas-calldata-parameters": "warn",
         "gas-length-in-loops": "warn",
         "one-contract-per-file": "off",
-        "import-path-check": "off"
+        "import-path-check": "off",
+        "use-natspec": "off",
+        "gas-indexed-events": "off",
+        "function-max-lines": "off"
     }
 }

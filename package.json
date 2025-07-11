@@ -19,13 +19,13 @@
   "scripts": {
     "lint:check": "yarn lint:sol-logic && yarn lint:sol-tests && forge fmt --check",
     "lint:fix": "forge fmt && yarn lint:sol-tests --fix && yarn lint:sol-logic --fix",
-    "lint:sol-logic": "solhint -c .solhint.json 'src/**/*.sol' 'script/**/*.sol' --max-warnings=0",
-    "lint:sol-tests": "solhint -c .solhint.tests.json 'test/**/*.sol' --max-warnings=0",
+    "lint:sol-logic": "solhint -c .solhint.json 'src/**/*.sol' 'script/**/*.sol' --max-warnings=0 --noPoster",
+    "lint:sol-tests": "solhint -c .solhint.tests.json 'test/**/*.sol' --max-warnings=0 --noPoster",
     "test": "forge test -vvv",
     "prepare": "husky"
   },
   "devDependencies": {
     "husky": ">=9",
-    "solhint": ">=5.1.0"
+    "solhint": ">=6.0.0"
   }
 }

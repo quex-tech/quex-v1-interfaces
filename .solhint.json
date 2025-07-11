@@ -8,6 +8,8 @@
         "interface-starts-with-i": "warn",
         "gas-calldata-parameters": "warn",
         "gas-length-in-loops": "warn",
-        "import-path-check": "off"
+        "import-path-check": "off",
+        "use-natspec": "off",
+        "gas-indexed-events": "off"
     }
 }
