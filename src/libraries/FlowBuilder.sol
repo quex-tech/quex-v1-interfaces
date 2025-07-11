@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import "src/interfaces/oracles/IRequestOraclePool.sol";
-import "src/interfaces/core/IFlowRegistry.sol";
+import {IRequestOraclePool} from "src/interfaces/oracles/IRequestOraclePool.sol";
+import {IFlowRegistry} from "src/interfaces/core/IFlowRegistry.sol";
 
 /**
  * @title FlowBuilder
@@ -22,14 +22,6 @@ library FlowBuilder {
         address consumer;
         bytes4 callback;
         uint256 gasLimit;
-    }
-
-    function create_new(address quexCore, address oraclePool, string memory host, string memory path)
-        internal
-        pure
-        returns (FlowConfig memory config)
-    {
-        config.flowRegistry = quexCore;
     }
 
     /**

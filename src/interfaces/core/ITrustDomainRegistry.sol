@@ -12,7 +12,7 @@ struct ECKey {
 struct QEReport {
     bytes16 CPUSVN;
     bytes4 MISCSELECT;
-    bytes16 attributes;
+    bytes16 ATTRIBUTES;
     bytes MRENCLAVE;
     bytes32 MRSIGNER;
     bytes2 ISVProdID;
@@ -78,7 +78,7 @@ interface ITrustDomainRegistry {
         uint256 qeId,
         uint256 x,
         uint256 y,
-        bytes32 authentication_data,
+        bytes32 authenticationData,
         uint256 r,
         uint256 s
     ) external returns (uint256 tdId);

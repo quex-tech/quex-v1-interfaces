@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import "openzeppelin-contracts/contracts/access/Ownable.sol";
-import "src/interfaces/core/IQuexActionRegistry.sol";
-import "src/libraries/FlowBuilder.sol";
+import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
+import {IQuexActionRegistry} from "src/interfaces/core/IQuexActionRegistry.sol";
+import {FlowBuilder} from "src/libraries/FlowBuilder.sol";
 
 using FlowBuilder for FlowBuilder.FlowConfig;
 
@@ -20,6 +20,13 @@ using FlowBuilder for FlowBuilder.FlowConfig;
  * To modify the default behavior, override the relevant methods in a derived contract.
  */
 abstract contract QuexRequestManager is Ownable {
+    error QuexRequestManager_FlowIdAlreadySet();
+    error QuexRequestManager_FlowIdNotSet();
+    error QuexRequestManager_OnlyQuexProxyCanPushData();
+    error QuexRequestManager_UnknownRequestId();
+    error QuexRequestManager_ReturnTypeIdMismatch();
+    error QuexRequestManager_TransferFailed();
+
     /// @notice Reference to the Quex Action Registry contract
     IQuexActionRegistry public quexCore;
 
@@ -50,7 +57,7 @@ abstract contract QuexRequestManager is Ownable {
      * @param flowId The unique identifier for the flow.
      */
     function setFlowId(uint256 flowId) public virtual onlyOwner {
-        require(_flowId == 0, "Flow ID is already set");
+        require(_flowId == 0, QuexRequestManager_FlowIdAlreadySet());
         _flowId = flowId;
     }
 
@@ -69,9 +76,9 @@ abstract contract QuexRequestManager is Ownable {
      * @param receivedRequestId The ID of the request associated with this response.
      */
     modifier verifyResponse(uint256 receivedRequestId, IdType idType) {
-        require(msg.sender == address(quexCore), "Only Quex Proxy can push data");
-        require(receivedRequestId == _requestId, "Unknown request ID");
-        require(idType == IdType.RequestId, "Return type mismatch");
+        require(msg.sender == address(quexCore), QuexRequestManager_OnlyQuexProxyCanPushData());
+        require(receivedRequestId == _requestId, QuexRequestManager_UnknownRequestId());
+        require(idType == IdType.RequestId, QuexRequestManager_ReturnTypeIdMismatch());
         _;
     }
 
@@ -80,7 +87,7 @@ abstract contract QuexRequestManager is Ownable {
      * @return The request ID of the newly created request.
      */
     function request() public payable virtual onlyOwner returns (uint256) {
-        require(_flowId != 0, "Flow ID is not set");
+        require(_flowId != 0, QuexRequestManager_FlowIdNotSet());
         _requestId = quexCore.createRequest{value: msg.value}(_flowId);
         return _requestId;
     }
@@ -90,8 +97,9 @@ abstract contract QuexRequestManager is Ownable {
      * @dev This contract may receive excess funds from Quex Core after calling `request()`.
      *      Therefore, the `receive()` function must be implemented to properly handle refunds.
      */
+    // solhint-disable-next-line no-complex-fallback
     receive() external payable virtual {
         (bool success,) = payable(owner()).call{value: msg.value}("");
-        require(success, "Transfer failed");
+        require(success, QuexRequestManager_TransferFailed());
     }
 }
