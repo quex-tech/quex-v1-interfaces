@@ -6,7 +6,7 @@ import "src/interfaces/core/IQuexActionRegistry.sol";
 import "src/interfaces/core/IDepositManager.sol";
 import "src/libraries/FlowBuilder.sol";
 
-    using FlowBuilder for FlowBuilder.FlowConfig;
+using FlowBuilder for FlowBuilder.FlowConfig;
 
 /**
  * @title QuexFlowManager
@@ -109,5 +109,4 @@ abstract contract QuexRequestManager is Ownable {
         IDepositManager depositManager = IDepositManager(quexCoreAddress);
         depositManager.withdraw(_subscriptionId, msg.sender);
     }
-
 }
