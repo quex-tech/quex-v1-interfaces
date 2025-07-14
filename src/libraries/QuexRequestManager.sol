@@ -6,7 +6,7 @@ import "src/interfaces/core/IQuexActionRegistry.sol";
 import "src/interfaces/core/IDepositManager.sol";
 import "src/libraries/FlowBuilder.sol";
 
-using FlowBuilder for FlowBuilder.FlowConfig;
+    using FlowBuilder for FlowBuilder.FlowConfig;
 
 /**
  * @title QuexFlowManager
@@ -69,12 +69,12 @@ abstract contract QuexRequestManager is Ownable {
     /**
      * @notice Set up subscription
      */
-    function createSubscription() public payable virtual onlyOwner {
+    function createSubscription2() internal virtual onlyOwner {
         IDepositManager depositManager = IDepositManager(quexCoreAddress);
         _subscriptionId = depositManager.createSubscription();
-        depositManager.setOwner(_subscriptionId, this.owner());
-        depositManager.deposit{value: msg.value}(_subscriptionId);
         depositManager.addConsumer(_subscriptionId, address(this));
+        depositManager.setOwner(_subscriptionId, owner());
+        depositManager.deposit{value: msg.value}(_subscriptionId);
     }
 
     /**
@@ -101,4 +101,13 @@ abstract contract QuexRequestManager is Ownable {
         _requestId = actionRegistry.createRequest(_flowId, _subscriptionId);
         return _requestId;
     }
+
+    /**
+     * @notice Withdraw all money from subscription to contract owner
+     */
+    function withdraw() public onlyOwner {
+        IDepositManager depositManager = IDepositManager(quexCoreAddress);
+        depositManager.withdraw(_subscriptionId, msg.sender);
+    }
+
 }

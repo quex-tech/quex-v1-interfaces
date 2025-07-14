@@ -106,35 +106,4 @@ interface ITrustDomainRegistry {
 
     function getQEAuthority(uint256 qeId) external view returns (uint256 platformSerial, uint256 pckSerial);
 
-    function getPCKCounterByPlatformCA(uint256 platformSerial) external view returns (uint256);
-
-    function getQECounterByProcessorPCK(uint256 platformSerial, uint256 pckSerial) external view returns (uint256);
-
-    function getTDCounterByQE(uint256 qeId) external view returns (uint256);
-
-    function isTeeTcbSvnAllowed(bytes16 tcbSvn) external view returns (bool);
-
-    function isCpuSvnAllowed(bytes16 cpuSvn) external view returns (bool);
-
-    function getTeeTcbSvnTDCounter(bytes16 tcbSvn) external view returns (uint256);
-
-    function getCpuSvnQECounter(bytes16 cpuSvn) external view returns (uint256);
-}
-
-interface ITrustDomainRegistryExtended is ITrustDomainRegistry {
-    function revokePCK(uint256 platformSerial, uint256 pckSerial) external;
-
-    function revokePlatformCA(uint256 serial) external;
-
-    function revokeQE(uint256 qeId) external;
-
-    function revokeTD(uint256 tdId) external;
-
-    function allowTeeTcbSvn(bytes16 tcbSvn) external;
-
-    function allowCpuSvn(bytes16 cpuSvn) external;
-
-    function revokeTeeTcbSvn(bytes16 tcbSvn) external;
-
-    function revokeCpuSvn(bytes16 cpuSvn) external;
 }
