@@ -41,8 +41,15 @@ struct TDQuote {
 }
 
 interface ITrustDomainRegistry {
+    event PlatformCAAdded(uint256 serial);
+    event PCKAdded(uint256 platformSerial, uint256 pckSerial);
     event QEReportAdded(uint256 qeId);
     event TDReportAdded(uint256 tdId);
+
+    event PlatformCARevoked(uint256 serial);
+    event PCKRevoked(uint256 platformSerial, uint256 pckSerial);
+    event QEReportRevoked(uint256 qeId);
+    event TDReportRevoked(uint256 tdId);
 
     function addPlatformCAKey(
         uint256 x,
@@ -98,10 +105,8 @@ interface ITrustDomainRegistry {
     function getQEId(uint256 tdId) external view returns (uint256 qeId);
 
     function getQEAuthority(uint256 qeId) external view returns (uint256 platformSerial, uint256 pckSerial);
-}
 
-interface ITrustDomainRegistryExtended is ITrustDomainRegistry {
-    function revokePCK(uint256 platformSerial, uint256 pckSerial) external;
+    function isTeeTcbSvnAllowed(bytes16 tcbSvn) external view returns (bool);
 
-    function revokePlatformCA(uint256 serial) external;
+    function isCpuSvnAllowed(bytes16 cpuSvn) external view returns (bool);
 }

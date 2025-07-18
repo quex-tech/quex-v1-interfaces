@@ -3,6 +3,7 @@ pragma solidity ^0.8.22;
 
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 import "src/interfaces/core/IQuexActionRegistry.sol";
+import "src/interfaces/core/IDepositManager.sol";
 import "src/libraries/FlowBuilder.sol";
 
 using FlowBuilder for FlowBuilder.FlowConfig;
@@ -20,8 +21,8 @@ using FlowBuilder for FlowBuilder.FlowConfig;
  * To modify the default behavior, override the relevant methods in a derived contract.
  */
 abstract contract QuexRequestManager is Ownable {
-    /// @notice Reference to the Quex Action Registry contract
-    IQuexActionRegistry public quexCore;
+    /// @notice Reference to the Quex core
+    address public quexCoreAddress;
 
     /// @notice Stores the ID of the most recent request sent to Quex core
     uint256 internal _requestId;
@@ -29,12 +30,15 @@ abstract contract QuexRequestManager is Ownable {
     /// @notice Stores the flow ID
     uint256 internal _flowId;
 
+    /// @notice Stores the subscription ID
+    uint256 internal _subscriptionId;
+
     /**
      * @dev Initializes the contract with the Quex Action Registry address and sets the owner.
-     * @param quexCoreAddress Address of the Quex Action Registry contract
+     * @param _quexCoreAddress Address of the Quex Action Registry contract
      */
-    constructor(address quexCoreAddress) Ownable(msg.sender) {
-        quexCore = IQuexActionRegistry(quexCoreAddress);
+    constructor(address _quexCoreAddress) Ownable(msg.sender) {
+        quexCoreAddress = _quexCoreAddress;
     }
 
     /**
@@ -63,13 +67,23 @@ abstract contract QuexRequestManager is Ownable {
     }
 
     /**
+     * @notice Set up subscription
+     */
+    function createSubscription(uint256 depositValue) internal virtual onlyOwner {
+        IDepositManager depositManager = IDepositManager(quexCoreAddress);
+        _subscriptionId = depositManager.createSubscription();
+        depositManager.addConsumer(_subscriptionId, address(this));
+        depositManager.deposit{value: depositValue}(_subscriptionId);
+    }
+
+    /**
      * @notice Performs necessary validation checks for an incoming response.
      * @dev Ensures the response originates from the Quex core contract and has passed all validity checks.
      *      Also verifies that the response corresponds to the latest request.
      * @param receivedRequestId The ID of the request associated with this response.
      */
     modifier verifyResponse(uint256 receivedRequestId, IdType idType) {
-        require(msg.sender == address(quexCore), "Only Quex Proxy can push data");
+        require(msg.sender == quexCoreAddress, "Only Quex Proxy can push data");
         require(receivedRequestId == _requestId, "Unknown request ID");
         require(idType == IdType.RequestId, "Return type mismatch");
         _;
@@ -79,19 +93,19 @@ abstract contract QuexRequestManager is Ownable {
      * @notice Sends a request to the Quex Action Registry
      * @return The request ID of the newly created request.
      */
-    function request() public payable virtual onlyOwner returns (uint256) {
+    function request() public virtual onlyOwner returns (uint256) {
         require(_flowId != 0, "Flow ID is not set");
-        _requestId = quexCore.createRequest{value: msg.value}(_flowId);
+        require(_subscriptionId != 0, "Subscription ID is not set");
+        IQuexActionRegistry actionRegistry = IQuexActionRegistry(quexCoreAddress);
+        _requestId = actionRegistry.createRequest(_flowId, _subscriptionId);
         return _requestId;
     }
 
     /**
-     * @notice Handles refunds if excess payment was made during a request.
-     * @dev This contract may receive excess funds from Quex Core after calling `request()`.
-     *      Therefore, the `receive()` function must be implemented to properly handle refunds.
+     * @notice Withdraw all money from subscription to contract owner
      */
-    receive() external payable virtual {
-        (bool success,) = payable(owner()).call{value: msg.value}("");
-        require(success, "Transfer failed");
+    function withdraw() public onlyOwner {
+        IDepositManager depositManager = IDepositManager(quexCoreAddress);
+        depositManager.withdraw(_subscriptionId, msg.sender);
     }
 }
