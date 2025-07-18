@@ -105,4 +105,8 @@ interface ITrustDomainRegistry {
     function getQEId(uint256 tdId) external view returns (uint256 qeId);
 
     function getQEAuthority(uint256 qeId) external view returns (uint256 platformSerial, uint256 pckSerial);
+
+    function isTeeTcbSvnAllowed(bytes16 tcbSvn) external view returns (bool);
+
+    function isCpuSvnAllowed(bytes16 cpuSvn) external view returns (bool);
 }
