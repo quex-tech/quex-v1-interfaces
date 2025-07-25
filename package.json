@@ -17,10 +17,11 @@
   },
   "homepage": "https://github.com/quex-tech/quex-v1-interfaces#readme",
   "scripts": {
-    "lint:check": "yarn lint:sol-logic && yarn lint:sol-tests && forge fmt --check",
+    "lint:check": "yarn lint:version && yarn lint:sol-logic && yarn lint:sol-tests && forge fmt --check",
     "lint:fix": "forge fmt && yarn lint:sol-tests --fix && yarn lint:sol-logic --fix",
     "lint:sol-logic": "solhint -c .solhint.json 'src/**/*.sol' 'script/**/*.sol' --max-warnings=0 --noPoster",
     "lint:sol-tests": "solhint -c test/.solhint.json 'test/**/*.sol' --max-warnings=0 --noPoster",
+    "lint:version": "solhint --version",
     "test": "forge test -vvv",
     "prepare": "husky"
   },
