@@ -1,8 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.22;
 
-import {IRequestOraclePool} from "src/interfaces/oracles/IRequestOraclePool.sol";
-import {IFlowRegistry} from "src/interfaces/core/IFlowRegistry.sol";
+import {
+    IRequestOraclePool,
+    HTTPRequest,
+    HTTPPrivatePatch,
+    RequestMethod,
+    RequestHeader,
+    QueryParameter,
+    RequestHeaderPatch,
+    QueryParameterPatch
+} from "src/interfaces/oracles/IRequestOraclePool.sol";
+import {IFlowRegistry, Flow} from "src/interfaces/core/IFlowRegistry.sol";
 
 /**
  * @title FlowBuilder

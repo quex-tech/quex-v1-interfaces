@@ -2,7 +2,7 @@
 pragma solidity ^0.8.22;
 
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
-import {IQuexActionRegistry} from "src/interfaces/core/IQuexActionRegistry.sol";
+import {IQuexActionRegistry, IdType} from "src/interfaces/core/IQuexActionRegistry.sol";
 import {FlowBuilder} from "src/libraries/FlowBuilder.sol";
 
 using FlowBuilder for FlowBuilder.FlowConfig;
@@ -26,6 +26,7 @@ abstract contract QuexRequestManager is Ownable {
     error QuexRequestManager_UnknownRequestId();
     error QuexRequestManager_ReturnTypeIdMismatch();
     error QuexRequestManager_TransferFailed();
+    error QuexRequestManager_FlowIdCannotBeZero();
 
     /// @notice Reference to the Quex Action Registry contract
     IQuexActionRegistry public quexCore;
@@ -57,7 +58,9 @@ abstract contract QuexRequestManager is Ownable {
      * @param flowId The unique identifier for the flow.
      */
     function setFlowId(uint256 flowId) public virtual onlyOwner {
-        require(_flowId == 0, QuexRequestManager_FlowIdAlreadySet());
+        if (flowId == 0) {
+            revert QuexRequestManager_FlowIdCannotBeZero();
+        }
         _flowId = flowId;
     }
 
@@ -76,9 +79,15 @@ abstract contract QuexRequestManager is Ownable {
      * @param receivedRequestId The ID of the request associated with this response.
      */
     modifier verifyResponse(uint256 receivedRequestId, IdType idType) {
-        require(msg.sender == address(quexCore), QuexRequestManager_OnlyQuexProxyCanPushData());
-        require(receivedRequestId == _requestId, QuexRequestManager_UnknownRequestId());
-        require(idType == IdType.RequestId, QuexRequestManager_ReturnTypeIdMismatch());
+        if (msg.sender != address(quexCore)) {
+            revert QuexRequestManager_OnlyQuexProxyCanPushData();
+        }
+        if (receivedRequestId != _requestId) {
+            revert QuexRequestManager_UnknownRequestId();
+        }
+        if (idType != IdType.RequestId) {
+            revert QuexRequestManager_ReturnTypeIdMismatch();
+        }
         _;
     }
 
@@ -87,7 +96,9 @@ abstract contract QuexRequestManager is Ownable {
      * @return The request ID of the newly created request.
      */
     function request() public payable virtual onlyOwner returns (uint256) {
-        require(_flowId != 0, QuexRequestManager_FlowIdNotSet());
+        if (_flowId == 0) {
+            revert QuexRequestManager_FlowIdNotSet();
+        }
         _requestId = quexCore.createRequest{value: msg.value}(_flowId);
         return _requestId;
     }
@@ -100,6 +111,8 @@ abstract contract QuexRequestManager is Ownable {
     // solhint-disable-next-line no-complex-fallback
     receive() external payable virtual {
         (bool success,) = payable(owner()).call{value: msg.value}("");
-        require(success, QuexRequestManager_TransferFailed());
+        if (!success) {
+            revert QuexRequestManager_TransferFailed();
+        }
     }
 }

@@ -3,8 +3,17 @@ pragma solidity ^0.8.22;
 
 import {Test} from "forge-std/Test.sol";
 import {FlowBuilder} from "../src/libraries/FlowBuilder.sol";
-import {IRequestOraclePool} from "../src/interfaces/oracles/IRequestOraclePool.sol";
-import {IFlowRegistry} from "../src/interfaces/core/IFlowRegistry.sol";
+import {
+    IRequestOraclePool,
+    HTTPRequest,
+    HTTPPrivatePatch,
+    RequestMethod,
+    RequestHeader,
+    QueryParameter,
+    RequestHeaderPatch,
+    QueryParameterPatch
+} from "../src/interfaces/oracles/IRequestOraclePool.sol";
+import {IFlowRegistry, Flow} from "../src/interfaces/core/IFlowRegistry.sol";
 
 contract FlowBuilderTest is Test {
     using FlowBuilder for FlowBuilder.FlowConfig;
