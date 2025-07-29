@@ -9,11 +9,11 @@ env:
   FOUNDRY_PROFILE: ci
 
 jobs:
-  check:
+  build_and_test:
     strategy:
       fail-fast: true
 
-    name: Foundry project
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,19 +23,27 @@ jobs:
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Show Forge version
-        run: |
-          forge --version
-
-      - name: Run Forge fmt
-        run: |
-          forge fmt --check
-        id: fmt
-
       - name: Run Forge build
         run: |
           forge build --sizes
         id: build
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
+
+  linter:
+    strategy:
+      fail-fast: false
+
+    name: Linter checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -45,5 +53,23 @@ jobs:
       - name: Install JS dependencies
         run: yarn install
 
-      - name: Run linter
-        run: npm run lint:check
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Show solhint version
+        run: npm run lint:version
+
+      - name: Show Forge version
+        run: forge --version
+
+      - name: Run linter for contracts
+        run: npm run lint:sol-logic
+        id: lint-logic
+
+      - name: Run linter for tests
+        run: npm run lint:sol-tests
+        id: lint-tests
+
+      - name: Run Forge fmt
+        run: forge fmt --check
+        id: fmt
