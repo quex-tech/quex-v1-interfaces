@@ -58,6 +58,8 @@ struct RequestAction {
 interface IRequestOraclePool {
     error RequestNotFound();
     error PrivatePatchNotFound();
+    error PrivatePatchNotAuthorized();
+    error PrivatePatchConsumerWrongCaller();
     error JqFilterNotFound();
     error ResponseSchemaNotFound();
 
@@ -83,4 +85,10 @@ interface IRequestOraclePool {
     function addAction(RequestAction memory requestAction) external returns (uint256 actionId);
 
     function getAction(uint256 actionId) external view returns (bytes memory);
+
+    function addPrivatePatchConsumer(bytes32 patchId, address consumer) external;
+
+    function removePrivatePatchConsumer(bytes32 patchId, address consumer) external;
+
+    function hasAccessToPrivatePatch(bytes32 patchId, address consumer) external view returns (bool);
 }
