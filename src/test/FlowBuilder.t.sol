@@ -180,12 +180,10 @@ contract FlowBuilderTest is Test {
 
         FlowBuilder.FlowConfig memory config = FlowBuilder.create(TEST_QUEX_CORE, TEST_ORACLE_POOL, host, path);
 
-        config = config.withCallback(TEST_CONSUMER, TEST_CALLBACK).withGasLimit(1000000).withSchema(schema).withFilter(
-            filter
-        ).withMethod(method).withHeaders(headers).withQueryParameters(parameters).withBody(body).withTdAddress(
-            tdAddress
-        ).withPrivatePathSuffix(pathSuffix).withPrivateHeaders(headersPatch).withPrivateQueryParameters(parametersPatch)
-            .withPrivateBody(bodyPatch);
+        config = config.withCallback(TEST_CONSUMER, TEST_CALLBACK).withGasLimit(1000000).withSchema(schema)
+            .withFilter(filter).withMethod(method).withHeaders(headers).withQueryParameters(parameters).withBody(body)
+            .withTdAddress(tdAddress).withPrivatePathSuffix(pathSuffix).withPrivateHeaders(headersPatch)
+            .withPrivateQueryParameters(parametersPatch).withPrivateBody(bodyPatch);
 
         uint256 actionId = 1;
 
@@ -235,7 +233,9 @@ contract FlowBuilderTest is Test {
         );
         vm.mockCall(
             TEST_ORACLE_POOL,
-            abi.encodeWithSelector(IRequestOraclePool.addActionByParts.selector, requestId, patchId, schemaId, filterId),
+            abi.encodeWithSelector(
+                IRequestOraclePool.addActionByParts.selector, requestId, patchId, schemaId, filterId
+            ),
             abi.encode(actionId)
         );
         vm.mockCall(TEST_QUEX_CORE, abi.encodeWithSelector(IFlowRegistry.createFlow.selector, flow), abi.encode(1));
